@@ -1,0 +1,90 @@
+version: '3.3'
+
+services:
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 27017:27017
+
+  mongo-seed:
+    image: stefanwalther/mongo-seed
+    container_name: mongo-seed
+    environment:
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+    volumes:
+      - ./mongo-seed:/mongo-seed
+    depends_on:
+      - mongo
+    command: [
+      "mongoimport --drop --host mongo --port 27017 --db walmart --collection products --mode upsert --type json --file /mongo-seed/bd.json --jsonArray"
+    ]
+
+  java:
+    build: .
+    ports:
+      - "8080:8080"
+    container_name: java
+    links:
+      - mongo
+    depends_on:
+      - mongo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#version: '3'
+#
+#services:
+#  mongo-seed:
+#    image: fvilers/mongo-seed
+#    environment:
+#      - MONGO_HOST=mongo
+#      - MONGO_PORT=27017
+#    volumes:
+#      - ./mongo-seed:/mongo-seed
+#    command:
+#      "mongoimport --db walmart --collection products --drop --file /mongo-seed/bd.json --jsonArray"
+#
+#  mongo:
+#    image: mongo:4
+#    container_name: mongo-database
+#    restart: always
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: example
+#    ports:
+#      - 27017:27017
+
